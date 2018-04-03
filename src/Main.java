@@ -8,48 +8,42 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        for (int i = 0; i < 5; i++) {
-//
-//            LatinSquare ls = getRandomSquare(6);
-//            System.out.println(ls.toString());
-//            System.out.println(ls.isCorrect());
-//            System.out.println();
+//        LatinSquare ls = getRandomSquare(6);
+//        int index = 1;
+//        while (!ls.isCorrect()) {
+//            index++;
+//            ls = getRandomSquare(4);
 //        }
-
-        LatinSquare ls = getRandomSquare(6);
-        int index = 1;
-        while (!ls.isCorrect()) {
-            index++;
-            ls = getRandomSquare(4);
-        }
-        System.out.println(ls.toString());
-        System.out.println(ls.isCorrect());
-        System.out.println(index);
-
-
-
-//        LatinSquare ls = getSquareFromFile("Square.txt");
-//
-//        for (int i = 0; i < ls.dimension; i++) {
-//            for (int j = 0; j < ls.dimension; j++) {
-//                System.out.printf(ls.data[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-//
-//        System.out.println();
-//        System.out.println();
+//        System.out.println(ls.toString());
 //        System.out.println(ls.isCorrect());
-//        System.out.println(ls.rowMaps.size());
-//        for (int i = 0; i < ls.rowMaps.size(); i++) {
-//            Map<Integer, Integer> rowMap = ls.rowMaps.get(i);
-//            for (int key: rowMap.keySet()) {
-//                System.out.printf(key + ": " + rowMap.get(key) + "   ");
-//            }
-//            System.out.println();
-//        }
-//        System.out.println();
-//        System.out.println();
+//        System.out.println(index);
+
+
+
+//        LatinSquare ls = (new BackTracking()).findLatinSquare(4);
+        LatinSquare ls = (new LatinSquareFinder(6)).findLatinSquare(LatinSquareFinder.METHOD_BACKTRACKING);
+//        LatinSquare ls = getSquareFromFile("Square.txt");
+
+        for (int i = 0; i < ls.dimension; i++) {
+            for (int j = 0; j < ls.dimension; j++) {
+                System.out.printf(ls.data[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println();
+        System.out.println(ls.isCorrect());
+        System.out.println(ls.rowMaps.size());
+        for (int i = 0; i < ls.rowMaps.size(); i++) {
+            Map<Integer, Integer> rowMap = ls.rowMaps.get(i);
+            for (int key: rowMap.keySet()) {
+                System.out.printf(key + ": " + rowMap.get(key) + "   ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println();
 
     }
 
