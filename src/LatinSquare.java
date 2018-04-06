@@ -97,6 +97,9 @@ public class LatinSquare {
         for (Map<Integer, Integer> rowMap: rowMaps) {
             for (int k: rowMap.keySet()) {
                 if (k != 0) { // 0 means not set value in array
+                    if (k > dimension) {
+                        return false;
+                    }
                     if (rowMap.get(k) != 1) {
                         return false;
                     }

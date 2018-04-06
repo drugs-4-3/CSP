@@ -7,6 +7,7 @@ public class LatinSquareFinder {
     public static final int METHOD_FORWARDCHECKING= 2;
 
     private int dimension;
+    private int iteration = 0;
 
 
     public LatinSquareFinder(int dimension) {
@@ -37,33 +38,41 @@ public class LatinSquareFinder {
     }
 
     private LatinSquare backTrackingIteration(LatinSquare ls, int index, int value) {
-        // if finished - return
-        if (index >= dimension*dimension -1 && ls.isCorrect()) {
-            if (getValueAtIndex(ls, (dimension*dimension-1)) != 0) {
-                return ls;
-            }
-        }
 
-        // try this value
-        ls = setVariable(ls, index, value);
+        long t1 = System.currentTimeMillis();
+        while (true) {
 
-        if (ls.isCorrect()) {
-            // set next variable
-            return backTrackingIteration(ls, ++index, 1);
-        }
-        else {
-            // check another value for current variable
-            if (value < dimension) {
-                return backTrackingIteration(ls, index, ++value);
+            // if finished - return
+            if (index >= dimension * dimension - 1 && ls.isCorrect()) {
+                if (getValueAtIndex(ls, (dimension * dimension - 1)) != 0) {
+                    break;
+                }
             }
-            // if all values checked and still incorrect - go back and try next value for previous variable
+
+            // try this value
+            ls = setVariable(ls, index, value);
+
+            if (ls.isCorrect()) {
+                // set next variable
+                index++;
+                value = 1;
+            }
             else {
-                ls = setVariable(ls, index, 0); // fall back with previously set value
-                index--;
-                int next_value = getValueAtIndex(ls, index) + 1;
-                return backTrackingIteration(ls, index, next_value);
+                // check another value for current variable
+                if (value < dimension) {
+                    value++;
+                }
+                // if all values checked and still incorrect - go back and try next value for previous variable
+                else {
+                    ls = setVariable(ls, index, 0); // fall back with previously set value
+                    index--;
+                    value = getValueAtIndex(ls, index) + 1;
+                }
             }
         }
+        long t2 = System.currentTimeMillis();
+        System.out.println("Execution time: " + (t2 - t1) + " ms. ");
+        return ls;
     }
 
     private LatinSquare findUsingBacktracking() {

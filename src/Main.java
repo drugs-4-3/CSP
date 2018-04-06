@@ -21,7 +21,7 @@ public class Main {
 
 
 //        LatinSquare ls = (new BackTracking()).findLatinSquare(4);
-        LatinSquare ls = (new LatinSquareFinder(6)).findLatinSquare(LatinSquareFinder.METHOD_BACKTRACKING);
+        LatinSquare ls = (new LatinSquareFinder(8)).findLatinSquare(LatinSquareFinder.METHOD_BACKTRACKING);
 //        LatinSquare ls = getSquareFromFile("Square.txt");
 
         for (int i = 0; i < ls.dimension; i++) {
