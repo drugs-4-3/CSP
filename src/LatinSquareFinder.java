@@ -1,4 +1,7 @@
+import sun.awt.image.ImageWatched;
+
 import java.security.InvalidParameterException;
+import java.util.LinkedList;
 
 public class LatinSquareFinder {
 
@@ -81,9 +84,109 @@ public class LatinSquareFinder {
     }
 
     private LatinSquare findUsingForwardChecking() {
-        // todo: not implemented
-        return new LatinSquare(dimension);
+        long t1 = System.currentTimeMillis();
+        LatinSquare result = findByForwardChecking(new LatinSquare(dimension), 0);
+        long t2 = System.currentTimeMillis();
+        System.out.println("Execution took: " + (t2 - t1) + " ms. !");
+        return result;
+
+//        LatinSquare ls = new LatinSquare(dimension);
+//        int index = 0;
+//        int last_index = dimension*dimension - 1;
+//
+//        while (index <= last_index) {
+//            int x = index%dimension;
+//            int y = index/dimension;
+//            int value = ls.getDomains()[x][y].getFirst();
+//            int old_value = getValueAtIndex(ls, index);
+//
+//            setVariable(ls, index, value);
+//            if (ls.isCorrect()) {
+//                index++;
+//            }
+//            else {
+//                if (ls.getDomains()[x][y].size() > 0) {
+//                    value = ls.getDomains()[x][y].getFirst();
+//                }
+//                else {
+//                    index --;
+//                }
+//            }
+//        }
+//
+//        return ls;
     }
+
+    private LatinSquare findByForwardChecking(LatinSquare ls, int index) {
+        // conditions for found solution
+        if ((index >= dimension*dimension - 1) && (ls.getValueAt(dimension - 1, dimension - 1) != 0) && ls.isCorrect()) {
+            return ls;
+        }
+        int x = index%dimension;
+        int y = index/dimension;
+        // if there is value in domain left
+        if (ls.getDomains()[x][y].size() > 0) {
+            ls.setVariable(x, y, ls.getDomains()[x][y].pop());
+            return findByForwardChecking(ls, ++index);
+        }
+        else {
+            // cofnac sie
+            ls.setVariable(x, y, 0);
+            return findByForwardChecking(ls, --index);
+        }
+    }
+
+    public LinkedList<LatinSquare> findAllUsingBacktracking()
+    {
+        LinkedList<LatinSquare> result = new LinkedList<>();
+        LatinSquare ls = new LatinSquare(dimension);
+        int index = 0;
+        int value = 1;
+
+        long t1 = System.currentTimeMillis();
+        while (true) {
+
+            // what's the condition for stopping further searching?
+            if (false) {
+                break;
+            }
+
+            // if found - return
+            if (index >= dimension * dimension - 1 && ls.isCorrect()) {
+                if (getValueAtIndex(ls, (dimension * dimension - 1)) != 0) {
+                    result.add(ls.copy());
+                    value++;
+                    System.out.println(result.size() + ":");
+                    System.out.println(ls.toString());
+                }
+            }
+
+            // try this value
+            ls = setVariable(ls, index, value);
+
+            if (ls.isCorrect()) {
+                // set next variable
+                index++;
+                value = 1;
+            }
+            else {
+                // check another value for current variable
+                if (value < dimension) {
+                    value++;
+                }
+                // if all values checked and still incorrect - go back and try next value for previous variable
+                else {
+                    ls = setVariable(ls, index, 0); // fall back with previously set value
+                    index--;
+                    value = getValueAtIndex(ls, index) + 1;
+                }
+            }
+        }
+        long t2 = System.currentTimeMillis();
+        System.out.println("Execution time: " + (t2 - t1) + " ms. ");
+        return result;
+    }
+
 
     /**
      * Sets variable in latinsquare specified by index value.
@@ -109,5 +212,4 @@ public class LatinSquareFinder {
         int y = index/dimension;
         return ls.getValueAt(x, y);
     }
-
 }

@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LatinSquare {
 
@@ -12,6 +9,7 @@ public class LatinSquare {
 
     public List<Map<Integer, Integer>> rowMaps;
     public List<Map<Integer, Integer>> columnMaps;
+    LinkedList<Integer>[][] domains;
 
 
     /**
@@ -22,12 +20,14 @@ public class LatinSquare {
     public LatinSquare(final int dimension) {
         this.dimension = dimension;
         this.data = new int[dimension][dimension];
+
         rowMaps = new ArrayList<Map<Integer, Integer>>(dimension);
         columnMaps = new ArrayList<Map<Integer, Integer>>(dimension);
         for(int i = 0; i < dimension; i++) {
             rowMaps.add(new HashMap<Integer, Integer>());
             columnMaps.add(new HashMap<Integer, Integer>());
         }
+        domains = generateDomains();
 
         changed = true;
         is_correct = false;
@@ -123,7 +123,7 @@ public class LatinSquare {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
-                sb.append((String)(data[i][j] + " "));
+                sb.append((data[i][j] + " "));
             }
             sb.append("\n");
         }
@@ -133,9 +133,14 @@ public class LatinSquare {
     public LatinSquare setVariable(int x, int y, int value) {
         if (x >= 0 && x <= dimension-1 && y >= 0 && y <= dimension-1) {
             data[x][y] = value;
+            removeFromDomain(value, x, y);
             changed = true;
         }
         return this;
+    }
+
+    public LatinSquare copy() {
+        return new LatinSquare(dimension, data.clone());
     }
 
     /**
@@ -149,4 +154,83 @@ public class LatinSquare {
         return data[x][y];
     }
 
+    /**
+     * Initially generates domain sets for variables
+     *
+     * @return LinkedList[][] domains list
+     */
+    private LinkedList<Integer>[][] generateDomains() {
+        domains = new LinkedList[dimension][dimension];
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                LinkedList<Integer> domain = new LinkedList<>();
+                for (int k = 1; k <= dimension; k++) {
+                    domain.add(k);
+                }
+                domains[i][j] = domain;
+            }
+        }
+        return domains;
+    }
+
+    /**
+     * Generates and returns domain sets for Latin Square that has already defined some of the variables.
+     * Thus, domains have some values excluded.
+     *
+     * @return LinkedList[][] - domains
+     */
+    private LinkedList<Integer>[][] generateDomainsForGivenData() {
+        domains = generateDomains();
+        for (int x = 0; x < dimension; x++) {
+            for (int y = 0; y < dimension; y++) {
+                int value = data[x][y];
+                cutDomains(value, x, y);
+            }
+        }
+        return domains;
+    }
+
+    /**
+     * Excludes values from domain sets according to given value placed in given variable (specified by x and y coords)
+     *
+     * @param value int
+     * @param x int
+     * @param y int
+     */
+    private void cutDomains(int value, int x, int y) {
+        // wykluczyc wartosc z domains o tym samym x
+        // wykluczyc wartosc z domains o tym samym y
+
+        for (int i = 0; i < dimension; i++) {
+            removeFromDomain(value, x, i);
+            removeFromDomain(value, i, y);
+        }
+    }
+
+    /**
+     * Removes specified value from domain for variable specified by X and Y cords
+     *
+     * @param value
+     * @param x
+     * @param y
+     */
+    private void removeFromDomain(int value, int x, int y) {
+        LinkedList<Integer> single_domain = domains[x][y];
+        int index = single_domain.indexOf(value);
+        if (index > -1) {
+            single_domain.remove(index);
+        }
+    }
+
+    /**
+     * Returns 2-dimensional array for each variable with list containing all possible values for it.
+     *
+     * @return LinkedList<Integer>[][]
+     */
+    public LinkedList<Integer>[][] getDomains() {
+        if (changed) {
+            domains = generateDomainsForGivenData();
+        }
+        return domains;
+    }
 }

@@ -8,6 +8,8 @@ public class Main {
 
     public static void main(String[] args) {
 
+        //(new LatinSquareFinder(6)).findAllUsingBacktracking();
+
 //        LatinSquare ls = getRandomSquare(6);
 //        int index = 1;
 //        while (!ls.isCorrect()) {
@@ -17,11 +19,11 @@ public class Main {
 //        System.out.println(ls.toString());
 //        System.out.println(ls.isCorrect());
 //        System.out.println(index);
-
-
+//
+//
 
 //        LatinSquare ls = (new BackTracking()).findLatinSquare(4);
-        LatinSquare ls = (new LatinSquareFinder(8)).findLatinSquare(LatinSquareFinder.METHOD_BACKTRACKING);
+        LatinSquare ls = (new LatinSquareFinder(8)).findLatinSquare(LatinSquareFinder.METHOD_FORWARDCHECKING);
 //        LatinSquare ls = getSquareFromFile("Square.txt");
 
         for (int i = 0; i < ls.dimension; i++) {
