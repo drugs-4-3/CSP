@@ -2,51 +2,33 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        //(new LatinSquareFinder(6)).findAllUsingBacktracking();
+        int dimension = 10;
+        LatinSquareFinder lsf = new LatinSquareFinder(dimension);
 
-//        LatinSquare ls = getRandomSquare(6);
-//        int index = 1;
-//        while (!ls.isCorrect()) {
-//            index++;
-//            ls = getRandomSquare(4);
-//        }
-//        System.out.println(ls.toString());
-//        System.out.println(ls.isCorrect());
-//        System.out.println(index);
-//
-//
+        long t1 = System.currentTimeMillis();
+        LatinSquare lsbt = lsf.findLatinSquare(LatinSquareFinder.METHOD_BACKTRACKING);
+        long t2 = System.currentTimeMillis();
 
-//        LatinSquare ls = (new BackTracking()).findLatinSquare(4);
-        LatinSquare ls = (new LatinSquareFinder(8)).findLatinSquare(LatinSquareFinder.METHOD_FORWARDCHECKING);
-//        LatinSquare ls = getSquareFromFile("Square.txt");
 
-        for (int i = 0; i < ls.dimension; i++) {
-            for (int j = 0; j < ls.dimension; j++) {
-                System.out.printf(ls.data[i][j] + " ");
-            }
-            System.out.println();
-        }
+//        long t3 = System.currentTimeMillis();
+//        LatinSquare lsfc = lsf.findLatinSquare(LatinSquareFinder.METHOD_FORWARDCHECKING);
+//        long t4 = System.currentTimeMillis();
 
-        System.out.println();
-        System.out.println();
-        System.out.println(ls.isCorrect());
-        System.out.println(ls.rowMaps.size());
-        for (int i = 0; i < ls.rowMaps.size(); i++) {
-            Map<Integer, Integer> rowMap = ls.rowMaps.get(i);
-            for (int key: rowMap.keySet()) {
-                System.out.printf(key + ": " + rowMap.get(key) + "   ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-        System.out.println();
+        System.out.println("### BACKTRACKING ###");
+        System.out.println(lsbt.toString());
+        System.out.println("is correct? " + lsbt.isCorrect());
+        System.out.println("Execution time: " + (t2 - t1) + "ms.");
+        System.out.printf("\n\n");
 
+//        System.out.println("### FORWARDCHECKING ###");
+//        System.out.println(lsfc.toString());
+//        System.out.println("is correct? " + lsfc.isCorrect());
+//        System.out.println("Execution time: " + (t4 - t3) + "ms.");
     }
 
     public static LatinSquare getSquareFromFile(String fileName) {
@@ -83,7 +65,6 @@ public class Main {
         }
         return null;
     }
-
 
     static LatinSquare getRandomSquare(int dim) {
 
