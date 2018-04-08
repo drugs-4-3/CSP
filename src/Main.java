@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int dimension = 10;
+        int dimension = 12;
         LatinSquareFinder lsf = new LatinSquareFinder(dimension);
 
         long t1 = System.currentTimeMillis();
@@ -15,9 +15,9 @@ public class Main {
         long t2 = System.currentTimeMillis();
 
 
-//        long t3 = System.currentTimeMillis();
-//        LatinSquare lsfc = lsf.findLatinSquare(LatinSquareFinder.METHOD_FORWARDCHECKING);
-//        long t4 = System.currentTimeMillis();
+        long t3 = System.currentTimeMillis();
+        LatinSquare lsfc = lsf.findLatinSquare(LatinSquareFinder.METHOD_FORWARDCHECKING);
+        long t4 = System.currentTimeMillis();
 
         System.out.println("### BACKTRACKING ###");
         System.out.println(lsbt.toString());
@@ -25,10 +25,10 @@ public class Main {
         System.out.println("Execution time: " + (t2 - t1) + "ms.");
         System.out.printf("\n\n");
 
-//        System.out.println("### FORWARDCHECKING ###");
-//        System.out.println(lsfc.toString());
-//        System.out.println("is correct? " + lsfc.isCorrect());
-//        System.out.println("Execution time: " + (t4 - t3) + "ms.");
+        System.out.println("### FORWARDCHECKING ###");
+        System.out.println(lsfc.toString());
+        System.out.println("is correct? " + lsfc.isCorrect());
+        System.out.println("Execution time: " + (t4 - t3) + "ms.");
     }
 
     public static LatinSquare getSquareFromFile(String fileName) {

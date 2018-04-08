@@ -1,3 +1,5 @@
+import sun.awt.image.ImageWatched;
+
 import java.util.*;
 
 public class LatinSquare {
@@ -7,9 +9,23 @@ public class LatinSquare {
     private boolean changed;
     private boolean is_correct;
 
+    /**
+     * For each column and rows contains map, such that:
+     * key is value in range (1, dimension)
+     * value is how many times this value appears in given column/row
+     */
     public List<Map<Integer, Integer>> rowMaps;
     public List<Map<Integer, Integer>> columnMaps;
+
+    /**
+     * This contains lists of available values for each variable specified by x, y
+     */
     LinkedList<Integer>[][] domains;
+
+    /**
+     * Contains already tried values for each variable - need to keep track of them to avoid loops
+     */
+    LinkedList<Integer>[][] tried_values;
 
 
     /**
@@ -28,6 +44,7 @@ public class LatinSquare {
             columnMaps.add(new HashMap<Integer, Integer>());
         }
         domains = generateDomains();
+        tried_values = generateTriedValues();
 
         changed = true;
         is_correct = false;
@@ -93,6 +110,12 @@ public class LatinSquare {
         }
     }
 
+    /**
+     * Checks for errors in columns and rows of latin square and returns false if latin square is incorrect.
+     * This check accepts not fully filled latin squares and doesn't take into account 0 values - they can repeat
+     *
+     * @return boolean - false if some variables of latin square are in conflict
+     */
     private boolean verifyMaps() {
         for (Map<Integer, Integer> rowMap: rowMaps) {
             for (int k: rowMap.keySet()) {
@@ -134,6 +157,7 @@ public class LatinSquare {
         if (x >= 0 && x <= dimension-1 && y >= 0 && y <= dimension-1) {
             data[x][y] = value;
             removeFromDomain(value, x, y);
+            tried_values[x][y].add(value);
             changed = true;
         }
         return this;
@@ -184,7 +208,14 @@ public class LatinSquare {
         for (int x = 0; x < dimension; x++) {
             for (int y = 0; y < dimension; y++) {
                 int value = data[x][y];
+                removeFromDomain(value, x, y);
                 cutDomains(value, x, y);
+
+                // remove already tried values from domain:
+                LinkedList<Integer> already_used = this.tried_values[x][y];
+                for (Integer i: already_used) {
+                    removeFromDomain(i, x, y);
+                }
             }
         }
         return domains;
@@ -198,8 +229,6 @@ public class LatinSquare {
      * @param y int
      */
     private void cutDomains(int value, int x, int y) {
-        // wykluczyc wartosc z domains o tym samym x
-        // wykluczyc wartosc z domains o tym samym y
 
         for (int i = 0; i < dimension; i++) {
             removeFromDomain(value, x, i);
@@ -232,5 +261,24 @@ public class LatinSquare {
             domains = generateDomainsForGivenData();
         }
         return domains;
+    }
+
+    /**
+     * Generates empty LinkedList<Integer>[dimension][dimension]
+     *
+     * @return empty initial tried_values
+     */
+    public LinkedList<Integer>[][] generateTriedValues() {
+        LinkedList<Integer>[][] result = new LinkedList[dimension][dimension];
+        for (int x = 0; x < dimension; x++) {
+            for (int y = 0; y < dimension; y++) {
+                result[x][y] = new LinkedList<>();
+            }
+        }
+        return result;
+    }
+
+    public LinkedList<Integer>[][] getTriedValues() {
+        return tried_values;
     }
 }

@@ -1,4 +1,5 @@
 import java.security.InvalidParameterException;
+import java.util.LinkedList;
 
 public class LatinSquareFinder {
 
@@ -40,6 +41,14 @@ public class LatinSquareFinder {
         return new LatinSquare(dimension);
     }
 
+    /**
+     * Recursively searches for LatinSquare using backtracking algorithm
+     *
+     * @param ls LatinSquare
+     * @param index index of currently focused variable
+     * @param value value to set on current variable
+     * @return correct LatinSquare
+     */
     private LatinSquare findByBackTracking(LatinSquare ls, int index, int value) {
         // if finished - return
         if (index >= dimension * dimension - 1 && ls.isCorrect() && getValueAtIndex(ls, (dimension * dimension - 1)) != 0) {
@@ -89,19 +98,23 @@ public class LatinSquareFinder {
      * @return LatinSquare - correct solution
      */
     private LatinSquare findByForwardChecking(LatinSquare ls, int index) {
+//        System.out.println("index: " + index);
         if ((index >= dimension*dimension - 1) && (ls.getValueAt(dimension - 1, dimension - 1) != 0) && ls.isCorrect()) {
             return ls;
         }
         int x = index%dimension;
         int y = index/dimension;
         // if there is value in domain left
-        if (ls.getDomains()[x][y].size() > 0) {
+        LinkedList domain = ls.getDomains()[x][y];
+        if (domain.size() > 0) {
             ls.setVariable(x, y, ls.getDomains()[x][y].pop());
             return findByForwardChecking(ls, ++index);
         }
         else {
             // step back
+            // wyczyscic liste wyprobowanych zmiennych dla tego indexu!!!
             ls.setVariable(x, y, 0);
+            ls.getTriedValues()[x][y].clear();
             return findByForwardChecking(ls, --index);
         }
     }
@@ -125,6 +138,13 @@ public class LatinSquareFinder {
         return ls.setVariable(x, y, value);
     }
 
+    /**
+     * Converts incremental index to x and y coords and returns latin square value at (x, y)
+     *
+     * @param ls LatinSquare
+     * @param index range (0, dim^2 - 1)
+     * @return int value of specified variable
+     */
     private int getValueAtIndex(LatinSquare ls, int index) {
         int x = index%dimension;
         int y = index/dimension;
